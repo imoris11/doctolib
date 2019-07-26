@@ -29,22 +29,18 @@ export default async function getAvailabilities(date, numberOfDays = 7) {
        date.add(30, "minutes")
     ) {
       const day = availabilities.get(date.format("d"));
-      if (event.kind === "opening") {
         day.slots.push(date.format("H:mm"));
-      }
     }
   }
   //remove times with scheduled appointment
   for (const event of appointments) {
     for (let date = moment(event.starts_at); date.isBefore(event.ends_at);  date.add(30, "minutes")) {
       const day = availabilities.get(date.format("d"));
-      if (event.kind === "appointment") {
         day.slots = day.slots.filter(
           slot => {
             return slot.indexOf(date.format("H:mm")) === -1
           }
         );
-      }
     }
   }
   return Array.from(availabilities.values())
