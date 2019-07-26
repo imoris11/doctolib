@@ -32,7 +32,7 @@ describe("getAvailabilities", () => {
     });
 
     it("test 1", async () => {
-      const availabilities = await getAvailabilities(new Date("2014-08-10"));
+      const availabilities = await getAvailabilities(new Date("2014-08-10"), 7);
       expect(availabilities.length).toBe(7);
 
       expect(String(availabilities[0].date)).toBe(
@@ -47,7 +47,7 @@ describe("getAvailabilities", () => {
         "9:30",
         "10:00",
         "11:30",
-        "21:00"
+        "12:00"
       ]);
 
       expect(String(availabilities[6].date)).toBe(
@@ -66,8 +66,8 @@ describe("getAvailabilities", () => {
         },
         {
           kind: "opening",
-          starts_at: new Date("2018-08-04 09:30"),
-          ends_at: new Date("2018-08-04 12:30"),
+          starts_at: new Date("2014-08-04 09:30"),
+          ends_at: new Date("2014-08-04 12:30"),
           weekly_recurring: true
         }
       ]);
@@ -75,6 +75,7 @@ describe("getAvailabilities", () => {
 
     it("test 1", async () => {
       const availabilities = await getAvailabilities(new Date("2014-08-10"));
+      
       expect(availabilities.length).toBe(7);
 
       expect(String(availabilities[0].date)).toBe(
@@ -85,7 +86,48 @@ describe("getAvailabilities", () => {
       expect(String(availabilities[1].date)).toBe(
         String(new Date("2014-08-11"))
       );
+
+      expect(String(availabilities[6].date)).toBe(
+        String(new Date("2014-08-16"))
+      );
       expect(availabilities[6].slots).toEqual([]);
+    });
+  });
+
+  describe("case 4", () => {
+    beforeEach(async () => {
+      await knex("events").insert([
+        {
+          kind: "appointment",
+          starts_at: new Date("2014-08-11 10:30"),
+          ends_at: new Date("2014-08-11 11:30")
+        },
+        {
+          kind: "opening",
+          starts_at: new Date("2014-08-04 09:30"),
+          ends_at: new Date("2014-08-04 12:30"),
+          weekly_recurring: true
+        }
+      ]);
+    });
+
+    it("test dynamic days", async () => {
+      const availabilities = await getAvailabilities(new Date("2014-08-10"), 4);
+      
+      expect(availabilities.length).toBe(4);
+
+      expect(String(availabilities[0].date)).toBe(
+        String(new Date("2014-08-10"))
+      );
+      expect(availabilities[0].slots).toEqual([]);
+
+      expect(String(availabilities[1].date)).toBe(
+        String(new Date("2014-08-11"))
+      );
+
+      expect(String(availabilities[3].date)).toBe(
+        String(new Date("2014-08-13"))
+      );
     });
   });
 });
