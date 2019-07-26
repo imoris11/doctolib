@@ -18,8 +18,12 @@ export default async function getAvailabilities(date, numberOfDays = 7) {
       this.where("weekly_recurring", true).orWhere("ends_at", ">", +date);
     });
 
-   const opening = events.filter((e) => e.kind === 'opening');
-   const appointments = events.filter((e) => e.kind === 'appointment');
+   const opening = [];
+   const appointments = [];
+   events.forEach((event) => {
+     if (event.kind === 'opening') opening.push(event)
+     else if (event.kind === 'appointment') appointments.push(event);
+   })
 
    //set openings for days
   for (const event of opening) {
