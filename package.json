@@ -10,7 +10,7 @@
     "build": "babel --presets es2015 -d lib/ src"
   },
   "dependencies": {
-    "knex": "^0.14.6",
+    "knex": "^2.4.0",
     "moment": "^2.22.1",
     "sqlite3": "^4.0.0"
   },
